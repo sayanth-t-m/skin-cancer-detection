@@ -1,9 +1,10 @@
-# skin-cancer-detection
-This project is a skin cancer detection model using Convolutional Neural Networks (CNNs) built in Python with TensorFlow and Keras. The model classifies skin cancer into benign or malignant categories using image data.
+
+
+---
 
 # Skin Cancer Detection Model Documentation
 
-This project is a skin cancer detection model using Convolutional Neural Networks (CNNs) built in Python with TensorFlow and Keras. The model classifies skin cancer into benign or malignant categories using image data.
+This project uses Convolutional Neural Networks (CNNs) built with Python, TensorFlow, and Keras to classify skin cancer images into multiple categories, such as melanoma, nevus, basal cell carcinoma, and more. The dataset includes several skin cancer types, organized into distinct folders for each category.
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
@@ -23,51 +24,59 @@ This project is a skin cancer detection model using Convolutional Neural Network
 12. [Running the Code](#running-the-code)
 13. [Optional: Deployment](#optional-deployment)
 
+---
+
 ## Prerequisites
-Before starting this project, make sure you have the following installed:
+
+Before starting, ensure you have the following installed:
 - Python 3.7+
-- Visual Studio Code
-- TensorFlow, Keras, and other necessary libraries (installed via pip)
+- Visual Studio Code (VS Code)
+- TensorFlow, Keras, and other necessary libraries (installed via `pip`)
 
 ## Project Setup
 
 ### Install Python
-1. Download and install Python from the official website [Python.org](https://www.python.org/downloads/).
-2. During installation, check the box for **"Add Python to PATH"**.
+
+1. Download and install Python from [Python.org](https://www.python.org/downloads/).
+2. Check the box for **"Add Python to PATH"** during installation.
 
 ### Install VS Code
+
 1. Download and install [Visual Studio Code](https://code.visualstudio.com/).
 
 ### Install Python Extension for VS Code
-1. Open VS Code and go to the Extensions view (`Ctrl+Shift+X`).
+
+1. Open VS Code and go to Extensions (`Ctrl+Shift+X`).
 2. Search for the **Python** extension by Microsoft and install it.
 
 ## Creating a Virtual Environment
-A virtual environment ensures dependencies remain isolated and prevents conflicts between projects.
 
 1. Open VS Code and create a new folder for the project.
-2. Open the terminal (`Ctrl + ` ``).
+2. Open the terminal (`Ctrl + \`).
 3. Run the following command to create a virtual environment:
    ```bash
    python -m venv env
    ```
-4. To activate the virtual environment, run:
+4. Activate the virtual environment:
    ```bash
-   .\env\Scripts\activate
+   .\env\Scripts\activate  # Windows
    ```
    You should see `(env)` in your terminal prompt.
 
 ## Installing Required Libraries
-With the virtual environment active, install the following required libraries:
+
+With the virtual environment active, install the required libraries:
 
 ```bash
 pip install tensorflow keras opencv-python pandas matplotlib seaborn scikit-learn
 ```
 
 ## Dataset
+
 ### Skin Cancer Dataset
+
 - Download the **ISIC Skin Cancer Dataset** from [Kaggle](https://www.kaggle.com/) or [ISIC Archive](https://www.isic-archive.com/).
-- Extract the dataset and organize it as follows:
+- Organize it as follows:
 
 ```
 dataset/
@@ -107,12 +116,11 @@ dataset/
         image1.jpg
         image2.jpg
         ...
-
 ```
 
 ## Data Preprocessing
 
-To load, preprocess, and augment the images, use the following code:
+To load, preprocess, and augment the images:
 
 ```python
 import tensorflow as tf
@@ -127,10 +135,10 @@ datagen = ImageDataGenerator(
 )
 
 train_data = datagen.flow_from_directory(
-    'path_to_dataset',  # Replace with the path to your dataset
+    'path_to_dataset',  # Replace with your dataset path
     target_size=(224, 224),
     batch_size=32,
-    class_mode='binary',
+    class_mode='categorical',  # Use 'categorical' for multi-class classification
     subset='training'
 )
 
@@ -138,14 +146,14 @@ validation_data = datagen.flow_from_directory(
     'path_to_dataset',
     target_size=(224, 224),
     batch_size=32,
-    class_mode='binary',
+    class_mode='categorical',
     subset='validation'
 )
 ```
 
 ## Building the CNN Model
 
-To build the CNN architecture, use the following code:
+This is a multi-class CNN architecture that classifies skin cancer into different categories:
 
 ```python
 from tensorflow.keras.models import Sequential
@@ -160,20 +168,23 @@ model.add(Dropout(0.25))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
+model.add(Conv2D(128, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
 model.add(Flatten())
 
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 
-model.add(Dense(1, activation='sigmoid'))  # Sigmoid for binary classification
+model.add(Dense(9, activation='softmax'))  # Softmax for multi-class classification
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 ```
 
 ## Training the Model
 
-Train the model using the following code:
+Train the model:
 
 ```python
 history = model.fit(
@@ -185,7 +196,7 @@ history = model.fit(
 
 ## Evaluating the Model
 
-Evaluate your model on the validation dataset:
+Evaluate the model on the validation set:
 
 ```python
 loss, accuracy = model.evaluate(validation_data)
@@ -197,19 +208,19 @@ print(f'Validation Accuracy: {accuracy * 100:.2f}%')
 To save the trained model:
 
 ```python
-model.save('skin_cancer_detection_model.h5')
+model.save('skin_cancer_classification_model.h5')
 ```
 
-To load the saved model for future use:
+To load it for future use:
 
 ```python
 from tensorflow.keras.models import load_model
-model = load_model('skin_cancer_detection_model.h5')
+model = load_model('skin_cancer_classification_model.h5')
 ```
 
 ## Making Predictions
 
-You can make predictions on new images as follows:
+To make predictions on new images:
 
 ```python
 from tensorflow.keras.preprocessing import image
@@ -220,15 +231,17 @@ img_array = image.img_to_array(img) / 255.0
 img_array = np.expand_dims(img_array, axis=0)
 
 prediction = model.predict(img_array)
-if prediction > 0.5:
-    print("Malignant")
-else:
-    print("Benign")
+predicted_class = np.argmax(prediction)
+class_labels = ['melanoma', 'nevus', 'basal_cell_carcinoma', 'squamous_cell_carcinoma', 
+                'vascular_lesion', 'seborrheic_keratosis', 'pigmented_benign_keratosis', 
+                'dermatofibroma', 'actinic_keratosis']
+
+print(f'Predicted class: {class_labels[predicted_class]}')
 ```
 
 ## Running the Code
 
-1. Ensure the virtual environment is activated (`.\env\Scriptsctivate`).
+1. Ensure the virtual environment is activated (`.\env\Scripts\activate`).
 2. Run the Python script:
    ```bash
    python main.py
@@ -237,3 +250,7 @@ else:
 ## Optional: Deployment
 
 To deploy the trained model as a web app using Flask or FastAPI, refer to tutorials on deploying TensorFlow models with these frameworks.
+
+---
+
+This version is adjusted to handle multi-class classification using categorical crossentropy.

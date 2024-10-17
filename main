@@ -10,17 +10,17 @@ datagen = ImageDataGenerator(
 )
 
 train_data = datagen.flow_from_directory(
-    'C:\Users\sayan\Downloads\archive\Skin cancer ISIC The International Skin Imaging Collaboration\dataset',  # Replace with your dataset path
+    'dataset',  # Your dataset directory path
     target_size=(224, 224),
     batch_size=32,
-    class_mode='categorical',  # Use 'categorical' for multi-class classification
+    class_mode='binary',
     subset='training'
 )
 
 validation_data = datagen.flow_from_directory(
-    'C:\Users\sayan\Downloads\archive\Skin cancer ISIC The International Skin Imaging Collaboration\dataset',
+    'dataset',
     target_size=(224, 224),
     batch_size=32,
-    class_mode='categorical',
+    class_mode='binary',
     subset='validation'
 )

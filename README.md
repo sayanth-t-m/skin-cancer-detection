@@ -71,14 +71,43 @@ pip install tensorflow keras opencv-python pandas matplotlib seaborn scikit-lear
 
 ```
 dataset/
-    benign/
+    melanoma/
         image1.jpg
         image2.jpg
         ...
-    malignant/
+    nevus/
         image1.jpg
         image2.jpg
         ...
+    basal_cell_carcinoma/
+        image1.jpg
+        image2.jpg
+        ...
+    squamous_cell_carcinoma/
+        image1.jpg
+        image2.jpg
+        ...
+    vascular_lesion/
+        image1.jpg
+        image2.jpg
+        ...
+    seborrheic_keratosis/
+        image1.jpg
+        image2.jpg
+        ...
+    pigmented_benign_keratosis/
+        image1.jpg
+        image2.jpg
+        ...
+    dermatofibroma/
+        image1.jpg
+        image2.jpg
+        ...
+    actinic_keratosis/
+        image1.jpg
+        image2.jpg
+        ...
+
 ```
 
 ## Data Preprocessing

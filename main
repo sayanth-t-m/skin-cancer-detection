@@ -1,26 +1,19 @@
+from data_preprocessing import load_data
+from model import build_model
 import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-datagen = ImageDataGenerator(
-    rescale=1.0/255,
-    validation_split=0.2,  # 80-20 train-validation split
-    horizontal_flip=True,
-    rotation_range=20,
-    zoom_range=0.2
-)
+# Load data
+train_data, validation_data = load_data('dataset/')
 
-train_data = datagen.flow_from_directory(
-    'dataset',  # Your dataset directory path
-    target_size=(224, 224),
-    batch_size=32,
-    class_mode='binary',
-    subset='training'
-)
+# Build and compile the model
+model = build_model()
 
-validation_data = datagen.flow_from_directory(
-    'dataset',
-    target_size=(224, 224),
-    batch_size=32,
-    class_mode='binary',
-    subset='validation'
-)
+# Train the model
+history = model.fit(train_data, epochs=20, validation_data=validation_data)
+
+# Save the model
+model.save('skin_cancer_classification_model.h5')
+
+# Evaluate the model
+loss, accuracy = model.evaluate(validation_data)
+print(f'Validation Accuracy: {accuracy * 100:.2f}%')
